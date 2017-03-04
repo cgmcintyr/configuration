@@ -1,0 +1,17 @@
+---
+# Tasks for installing urxvt 
+
+- name: install urxvt terminal emulator
+  when: ansible_os_family == "Debian"
+  apt:
+    name: rxvt-unicode-256color
+    state: present
+
+
+- name: copy urxvt clipboard script
+  copy:
+    src: ../files/xkr-clipboard.pl
+    dest: /usr/lib/urxvt/perl/xkr-clipboard
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"

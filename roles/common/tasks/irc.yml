@@ -1,0 +1,33 @@
+---
+# Core command line utiltity setup
+- name: install weechat
+  when: ansible_os_family == "Debian"
+  apt:
+    name: weechat
+    state: latest
+
+- name: check pip installed
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "{{item}}"
+    state: latest
+  with_items:
+    - python-pip
+    - python3-pip
+
+- name: install dependencies for slack plugin
+  pip:
+    executable: "{{item}}"
+    name: websocket-client
+    state: latest
+  with_items:
+    - pip2
+    - pip3
+
+- name: add slack plugin
+  become: true
+  become_user: "{{ username }}"
+  copy:
+    src: ../files/wee_slack.py
+    dest: ~/.weechat/python/autoload/wee_slack.py
+    mode: "u=rw,g=r,o=r"

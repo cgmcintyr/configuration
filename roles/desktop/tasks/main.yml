@@ -1,0 +1,54 @@
+---
+# Tasks for core desktop setup
+
+- include: xfce4.yml
+- include: firefox.yml
+- include: urxvt.yml
+- include: spotify.yml
+- include: tor.yml
+
+- name: install xclip
+  when: ansible_os_family == "Debian"
+  apt:
+    name: xclip
+    state: present
+
+- name: install chromium
+  when: ansible_os_family == "Debian"
+  apt:
+    name: chromium
+    state: present
+
+- name: install libreoffice
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - libreoffice
+    - myspell-en-gb
+    - myspell-de-de
+
+- name: install redshift
+  when: ansible_os_family == "Debian"
+  apt:
+    name: redshift
+    state: present
+
+- name: install mupdf
+  when: ansible_os_family == "Debian"
+  apt:
+    name: mupdf
+    state: present
+
+- name: install gimp
+  when: ansible_os_family == "Debian"
+  apt:
+    name: gimp
+    state: present
+
+- name: install transmission
+  when: ansible_os_family == "Debian"
+  apt:
+    name: transmission
+    state: present

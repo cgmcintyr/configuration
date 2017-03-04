@@ -1,0 +1,64 @@
+---
+# Core command line utiltity setup
+- name: install core dev tools
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - curl
+    - git
+    - neovim
+    - stow
+    - sudo
+    - tmux
+    - tree
+    - unzip
+    - vim
+    - zsh
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+
+- name: setup default user
+  user:
+    name: "{{ username }}"
+    append: yes
+    groups: wheel
+    shell: /usr/bin/zsh
+    createhome: yes
+    state: present
+
+- name: create personal bin directory
+  file:
+    path: /home/{{ username }}/bin
+    state: directory
+
+- name: create personal devel directory
+  file:
+    path: /home/{{ username }}/devel
+    state: directory
+
+- name: clone dotfiles repo
+  git:
+    repo: git@github.com:cgmcintyr/dotfiles.git
+    dest: /home/{{ username }}/dotfiles
+    version: master
+    accept_hostkey: yes
+    update: true
+  become: true
+  become_user: "{{ username }}"
+
+- name: stow dotfiles
+  become: true
+  become_user: "{{ username }}"
+  shell: "cd /home/{{ username }}/dotfiles && stow -R * -v"

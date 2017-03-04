@@ -1,0 +1,9 @@
+---
+- hosts: personal
+  roles:
+    - common
+    - desktop
+    - uni
+    - docker
+  vars:
+    username: cgmcintyre

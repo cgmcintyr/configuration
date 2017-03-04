@@ -1,0 +1,32 @@
+---
+# Tasks for installing newest tor
+
+- name: check if tor installed
+  shell: "[ -d /opt/tor ] && echo 'Found' || echo ''"
+  register: tor_installed
+
+- name: check if tor downloaded
+  shell: "[ -f /tmp/tor.tar.xz ] && echo 'Found' || echo ''"
+  when: not tor_installed.stdout
+  register: tor_tar_exists
+
+- name: download tor zip
+  when: (not tor_tar_exists) and (not tor_installed)
+  get_url:
+    url: https://www.torproject.org/dist/torbrowser/6.5/tor-browser-linux64-6.5_en-US.tar.xz
+    dest: /tmp/tor.tar.xz
+  register: tor_downloaded
+
+- name: extract tor
+  unarchive:
+    src: /tmp/tor.tar.bz2
+    dest: /opt
+  when: tor_downloaded and (not tor_installed)
+
+- name: add tor desktop entry
+  copy:
+    src: ../files/tor.desktop
+    dest: /usr/share/applications/tor.desktop
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"

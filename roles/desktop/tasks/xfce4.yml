@@ -1,0 +1,43 @@
+---
+# Tasks for xfce4 setup
+
+- name: install xfce and goodies
+  when: ansible_os_family == "Debian"
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - xfce4
+    - xfce4-battery-plugin
+    - xfce4-power-manager
+    - xfce4-power-manager-plugins
+    - xfce4-clipman-plugin
+
+- name: install numix theme
+  when: ansible_os_family == "Debian"
+  apt:
+    name: numix-gtk-theme
+    state: present
+  register: numix
+
+- name: install paper
+  when: ansible_os_family == "Debian"
+  shell: "dpkg -i {{ role_path }}/files/paper*.deb; apt-get install -f"
+
+- name: set xfce4 theme as numix
+  when: ansible_os_family == "Debian"
+  become: true
+  become_user: "{{ username }}"
+  shell: "xfconf-query -c xsettings -p /Net/ThemeName -s \"Numix\""
+
+- name: set xfce4 icon theme as paper
+  when: ansible_os_family == "Debian"
+  become: true
+  become_user: "{{ username }}"
+  shell: "xfconf-query -c xsettings -p /Net/IconThemeName -s \"Paper\""
+
+- name: set xfwm theme to Numix
+  when: ansible_os_family == "Debian"
+  become: true
+  become_user: "{{ username }}"
+  shell: "xfconf-query -v -c xfwm4 -p /general/theme -s \"Numix\""
