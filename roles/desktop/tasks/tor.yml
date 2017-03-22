@@ -11,7 +11,7 @@
   register: tor_tar_exists
 
 - name: download tor zip
-  when: (not tor_tar_exists) and (not tor_installed)
+  when: (not tor_tar_exists.stdout) and (not tor_installed.stdout)
   get_url:
     url: https://www.torproject.org/dist/torbrowser/6.5/tor-browser-linux64-6.5_en-US.tar.xz
     dest: /tmp/tor.tar.xz
@@ -19,14 +19,14 @@
 
 - name: extract tor
   unarchive:
-    src: /tmp/tor.tar.bz2
+    src: /tmp/tor.tar.xz
     dest: /opt
-  when: tor_downloaded and (not tor_installed)
+  when: (tor_downloaded or tor_tar_exists.stdout) and (not tor_installed.stdout)
 
 - name: add tor desktop entry
   copy:
-    src: ../files/tor.desktop
-    dest: /usr/share/applications/tor.desktop
+    src: /opt/tor-browser_en-US/Browser/start-tor-browser.desktop
+    dest: /usr/share/applications/start-tor-browser.desktop
     owner: root
     group: root
     mode: "u=rw,g=r,o=r"
