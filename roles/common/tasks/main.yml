@@ -1,3 +1,4 @@
 ---
 - include: core.yml
 - include: irc.yml
+- include: mail.yml
