@@ -5,5 +5,5 @@
     - desktop
     - uni
     - docker
-  vars:
-    username: cgmcintyre
+  vars_files:
+    - ./vars/usernames.yml
