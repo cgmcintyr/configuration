@@ -1,5 +1,10 @@
 ---
 # Core command line utiltity setup
+- name: add neovim ppa
+  apt_repository:
+    repo: 'ppa:neovim-ppa/stable'
+  when: ansible_distribution == 'Ubuntu'
+
 - name: install core dev tools
   when: ansible_os_family == "Debian"
   apt:
@@ -17,36 +22,42 @@
     - vim
     - zsh
 
-- name: Make sure we have a 'wheel' group
+- name: Creating 'wheel' group
   group:
     name: wheel
     state: present
 
-- name: Allow 'wheel' group to have passwordless sudo
+- name: Allowing 'wheel' group to have passwordless sudo
   lineinfile:
     dest: /etc/sudoers
     state: present
     regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
 
-- name: setup default user
+- name: Creating default user
   user:
     name: "{{ username }}"
+    password: "{{ password |password_hash('sha512') }}"
     append: yes
     groups: wheel
     shell: /usr/bin/zsh
     createhome: yes
     state: present
+    update_password: on_create
 
-- name: create personal bin directory
+- name: Creating personal bin directory
   file:
     path: /home/{{ username }}/bin
     state: directory
+  become: true
+  become_user: "{{ username }}"
 
 - name: create personal devel directory
   file:
     path: /home/{{ username }}/devel
     state: directory
+  become: true
+  become_user: "{{ username }}"
 
 - name: clone dotfiles repo
   git:
@@ -57,6 +68,16 @@
     update: true
   become: true
   become_user: "{{ username }}"
+
+- name: ensure dotfiles are removed
+  when: ansible_os_family == "Debian"
+  file:
+    path: "/home/{{ username }}/{{item}}"
+    state: absent
+  with_items:
+    - ".bashrc"
+    - ".bash_logout"
+    - ".profile"
 
 - name: stow dotfiles
   become: true
