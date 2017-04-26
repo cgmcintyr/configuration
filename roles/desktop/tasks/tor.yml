@@ -13,7 +13,7 @@
 - name: download tor zip
   when: (not tor_tar_exists.stdout) and (not tor_installed.stdout)
   get_url:
-    url: https://www.torproject.org/dist/torbrowser/6.5/tor-browser-linux64-6.5_en-US.tar.xz
+    url: https://www.torproject.org/dist/torbrowser/6.5.1/tor-browser-linux64-6.5.1_en-US.tar.xz
     dest: /tmp/tor.tar.xz
   register: tor_downloaded
 
