@@ -45,13 +45,6 @@
     state: present
     update_password: on_create
 
-- name: Creating personal bin directory
-  file:
-    path: /home/{{ username }}/bin
-    state: directory
-  become: true
-  become_user: "{{ username }}"
-
 - name: create personal devel directory
   file:
     path: /home/{{ username }}/devel

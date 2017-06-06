@@ -11,7 +11,7 @@
   register: firefox_tar_exists
 
 - name: download firefox zip
-  when: (not firefox_tar_exists) and (not firefox_installed)
+  when: (not firefox_tar_exists) and (not firefox_installed.stdout)
   get_url:
     url: https://download.mozilla.org/?product=firefox-latest&os=win&lang=en-US
     dest: /tmp/firefox.tar.bz2
@@ -21,7 +21,7 @@
   unarchive:
     src: /tmp/firefox.tar.bz2
     dest: /opt
-  when: firefox_downloaded and (not firefox_installed)
+  when: (firefox_downloaded or firefox_tar_exists.stdout) and (not firefox_installed)
 
 - name: add firefox desktop entry
   copy:
