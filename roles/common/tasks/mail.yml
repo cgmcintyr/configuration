@@ -13,6 +13,8 @@
 - name: Create cron job to sync offlineimap
   cron:
     name: "offline imap sync"
-    minute: "3"
+    minute: "*/3"
     user: "{{ username }}"
     job: "/usr/bin/offlineimap -o -u quiet"
+  become: true
+  become_user: "{{ username }}"
