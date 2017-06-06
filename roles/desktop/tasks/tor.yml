@@ -11,7 +11,7 @@
   register: tor_tar_exists
 
 - name: download tor zip
-  when: (not tor_tar_exists.stdout) and (not tor_installed.stdout)
+  when: (not tor_tar_exists) and (not tor_installed.stdout)
   get_url:
     url: https://www.torproject.org/dist/torbrowser/6.5.1/tor-browser-linux64-6.5.1_en-US.tar.xz
     dest: /tmp/tor.tar.xz
@@ -21,7 +21,7 @@
   unarchive:
     src: /tmp/tor.tar.xz
     dest: /opt
-  when: (tor_downloaded or tor_tar_exists.stdout) and (not tor_installed.stdout)
+  when: (tor_downloaded or tor_tar_exists.stdout) and (not tor_installed)
 
 - name: add tor desktop entry
   copy:
