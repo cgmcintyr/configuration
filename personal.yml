@@ -3,7 +3,6 @@
   roles:
     - common
     - desktop
-    - uni
     - docker
   vars_files:
     - ./vars/usernames.yml

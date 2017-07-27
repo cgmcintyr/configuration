@@ -34,17 +34,6 @@
     regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
 
-- name: Creating default user
-  user:
-    name: "{{ username }}"
-    password: "{{ password |password_hash('sha512') }}"
-    append: yes
-    groups: wheel
-    shell: /usr/bin/zsh
-    createhome: yes
-    state: present
-    update_password: on_create
-
 - name: create personal devel directory
   file:
     path: /home/{{ username }}/devel
@@ -54,7 +43,7 @@
 
 - name: clone dotfiles repo
   git:
-    repo: git@github.com:cgmcintyr/dotfiles.git
+    repo: https://github.com/cgmcintyr/dotfiles.git
     dest: /home/{{ username }}/dotfiles
     version: master
     accept_hostkey: yes
