@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# initialize X resource database (if file ~/.Xdefaults is present on the system)
+xrdb -load ~/.Xdefaults
+
+for f in /etc/X11/xinit/xinitrc.d/?*.sh; do
+    [ -x "$f" ] && . "$f"
+done
+unset f
+
+exec i3

@@ -1,0 +1,9 @@
+---
+- name: Ensure python selinux bindings present
+  dnf:
+    name: 'libselinux-python'
+    state: present
+
+- include: root.yml
+- include: user.yml
+- include: secure-shell-strong.yml

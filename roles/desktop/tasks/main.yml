@@ -1,0 +1,62 @@
+---
+- name: Base desktop groups are present.
+  become: true
+  dnf:
+    name: "{{ item }}"
+    state: present 
+  with_items:
+    - '@base-x'
+    - '@fonts'
+    - '@hardware-support'
+    - '@multimedia'
+    - '@standard'
+    - '@Virtualisation'
+    - 'xorg-x11-xinit-session'
+
+- name: LightDM and i3 are at latest versions
+  become: true
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - 'i3'
+    - 'lightdm'
+
+- name: Copy across LightDM config
+  become: true
+  copy: src=lightdm_config dest=/etc/lightdm/lightdm.conf
+
+- name: Enable LightDM service
+  become: true
+  systemd:
+    name: lightdm
+    enabled: yes
+
+- name: Get default runlevel
+  become: true
+  command: systemctl get-default
+  register: runlevel
+  changed_when: False
+
+- name: Set graphical runlevel
+  become: true
+  command: systemctl set-default graphical.target
+  when: runlevel.stdout != "graphical.target"
+
+- name: Copy across xinitrc
+  copy: 
+    src: xinitrc
+    dest: ~/.xinitrc
+    mode: u+rwx,g+rw,o+rw
+
+- name: create symlink from ~/.xsession to ~/.xinitrc
+  file:
+    src: ~/.xinitrc
+    dest: ~/.xsession
+    state: link
+
+#- name: Creates i3 config directory
+#  file: path=~/.config/i3 state=directory
+#
+#- name: Copy across i3 config
+#  copy: src=i3-config dest=~/.config/i3/config

@@ -1,0 +1,40 @@
+- name: Ensure git and stow are present
+  become: true
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - stow
+
+- name: Check for dotfiles
+  stat: path={{ dotfiles_dir }}
+  register: local_dotfiles_dir
+
+- name: clone dotfiles
+  git:
+    repo: "{{ dotfiles_remote_url_https }}"
+    dest: "{{ dotfiles_dir }}"
+    force: no
+  when: local_dotfiles_dir.stat.exists == false
+  register: dotfiles_cloned
+
+- name: Update remote url to use SSH protocol
+  lineinfile:
+    dest: "{{ dotfiles_dir }}/.git/config"
+    line: "	url = {{ dotfiles_remote_url_ssh }}"
+    regexp: url =
+
+- name: Remove existing bash dotifles
+  file:
+    path: "~/{{item}}"
+    state: absent
+  with_items:
+    - ".bashrc"
+    - ".bash_logout"
+    - ".bash_profile"
+    - ".profile"
+  when: dotfiles_cloned
+
+- name: Stow dotfiles
+  shell: "cd ~/dotfiles && stow -R * -v"

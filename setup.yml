@@ -1,0 +1,13 @@
+---
+- hosts: personal
+  become: true
+  remote_user: "{{ username }}"
+  roles:
+    - common
+    - development
+
+- hosts: personal
+  remote_user: "{{ username }}"
+  roles:
+    - dotfiles
+    - desktop
