@@ -1,0 +1,16 @@
+---
+- name: Ensure LightDM is present
+  become: true
+  dnf:
+    name: lightdm
+    state: present
+
+- name: Copy across LightDM config
+  become: true
+  copy: src=lightdm_config dest=/etc/lightdm/lightdm.conf
+
+- name: Enable LightDM service
+  become: true
+  systemd:
+    name: lightdm
+    enabled: yes

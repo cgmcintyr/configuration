@@ -1,0 +1,62 @@
+---
+- name: Add neovim ppa
+  apt_repository:
+    repo: 'ppa:neovim-ppa/stable'
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install neovim
+  package:
+    name: neovim
+    state: present
+
+- name: Install pip and pip3.
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-pip
+    - python3-pip
+
+- name: Ensure virtualenv-wrapper present
+  dnf:
+    name: python-virtualenvwrapper
+    state: present
+
+- name: Ensure virtualenvs directory exits
+  file: path=~/.virtualenvs state=directory
+
+- name: Check if NVIM3 virtualenv exists
+  become: "{{ username }}"
+  shell: '[[ "$(. /usr/bin/virtualenvwrapper.sh && lsvirtualenv)" == *"NVIM3"* ]]'
+  ignore_errors: yes
+  register: nvim3_exists
+  environment:
+    WORKON_HOME: "~/.virtualenvs"
+  changed_when: False
+
+- name: Create NVIM3 virtualenv
+  become: "{{ username }}"
+  shell: . /usr/bin/virtualenvwrapper.sh && mkvirtualenv -p python3 NVIM3 && pip install neovim && deactivate
+  environment:
+    WORKON_HOME: "~/.virtualenvs"
+  when: nvim3_exists.rc == 1
+
+- name: Check if NVIM2 virtualenv exists
+  become: "{{ username }}"
+  shell: '[[ "$(. /usr/bin/virtualenvwrapper.sh && lsvirtualenv)" == *"NVIM2"* ]]'
+  ignore_errors: yes
+  register: nvim2_exists
+  environment:
+    WORKON_HOME: "~/.virtualenvs"
+  changed_when: False
+
+- name: Create NVIM2 virtualenv
+  become: "{{ username }}"
+  shell: . /usr/bin/virtualenvwrapper.sh && mkvirtualenv -p python2 NVIM2 && pip install neovim && deactivate
+  environment:
+    WORKON_HOME: "~/.virtualenvs"
+  when: nvim2_exists.rc == 1
+
+- name: Run pluginstall command
+  become: "{{ username }}"
+  shell: nvim +PlugInstall +qa

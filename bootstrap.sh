@@ -26,8 +26,8 @@ if command apt > /dev/null 2>&1; then
 elif command dnf > /dev/null 2>&1; then
     echo -e "${BOLD}Installing Ansible and OpenSSH using dnf...${NORMAL}"
     CHECK_UPDATE=$(sudo dnf check-update > /dev/null 2>&1; echo $?)
-    if [ $CHECK_UPDATE -eq 100 ] || [ $CHECK_UPDATE -eq 0 ]; then
-        sudo dnf install -y ansible openssh-server 
+    if [ "$CHECK_UPDATE" -eq 100 ] || [ "$CHECK_UPDATE" -eq 0 ]; then
+        sudo dnf install -y ansible openssh-server
     else
         echo -e "${BOLD}Error:${NORMAL} dnf check-update returned $CHECK_UPDATE"
     fi

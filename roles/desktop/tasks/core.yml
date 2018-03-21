@@ -1,0 +1,38 @@
+---
+- name: Base desktop groups are present.
+  become: true
+  dnf:
+    name: "{{ item }}"
+    state: present 
+  with_items:
+    - '@base-x'
+    - '@fonts'
+    - '@hardware-support'
+    - '@multimedia'
+    - '@standard'
+    - '@Virtualisation'
+    - 'xorg-x11-xinit-session'
+
+- name: Get default runlevel
+  become: true
+  command: systemctl get-default
+  register: runlevel
+  changed_when: False
+
+- name: Set graphical runlevel
+  become: true
+  command: systemctl set-default graphical.target
+  when: runlevel.stdout != "graphical.target"
+
+- name: Copy across xinitrc
+  copy: 
+    src: xinitrc
+    dest: ~/.xinitrc
+    mode: u+rwx,g+rw,o+rw
+
+- name: create symlink from ~/.xsession to ~/.xinitrc
+  file:
+    src: ~/.xinitrc
+    dest: ~/.xsession
+    state: link
+

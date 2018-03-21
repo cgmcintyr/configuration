@@ -1,0 +1,6 @@
+---
+- name: Ensure i3 is present
+  become: true
+  dnf:
+    name: i3
+    state: present

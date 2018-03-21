@@ -1,3 +1,4 @@
+---
 - name: Ensure git and stow are present
   become: true
   dnf:
