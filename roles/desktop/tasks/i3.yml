@@ -1,6 +1,7 @@
 ---
 - name: Ensure i3 is present
   become: true
+  become_user: root
   dnf:
     name: i3
     state: present

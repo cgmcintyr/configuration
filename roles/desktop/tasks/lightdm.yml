@@ -1,16 +1,19 @@
 ---
 - name: Ensure LightDM is present
   become: true
+  become_user: root
   dnf:
     name: lightdm
     state: present
 
 - name: Copy across LightDM config
   become: true
+  become_user: root
   copy: src=lightdm_config dest=/etc/lightdm/lightdm.conf
 
 - name: Enable LightDM service
   become: true
+  become_user: root
   systemd:
     name: lightdm
     enabled: yes

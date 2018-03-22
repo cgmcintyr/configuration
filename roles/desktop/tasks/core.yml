@@ -1,6 +1,7 @@
 ---
 - name: Base desktop groups are present.
   become: true
+  become_user: root
   dnf:
     name: "{{ item }}"
     state: present 
@@ -12,15 +13,18 @@
     - '@standard'
     - '@Virtualisation'
     - 'xorg-x11-xinit-session'
+    - 'NetworkManager-wifi'
 
 - name: Get default runlevel
   become: true
+  become_user: root
   command: systemctl get-default
   register: runlevel
   changed_when: False
 
 - name: Set graphical runlevel
   become: true
+  become_user: root
   command: systemctl set-default graphical.target
   when: runlevel.stdout != "graphical.target"
 

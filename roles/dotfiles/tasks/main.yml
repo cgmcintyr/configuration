@@ -1,6 +1,7 @@
 ---
 - name: Ensure git and stow are present
   become: true
+  become_user: root
   dnf:
     name: "{{ item }}"
     state: present
