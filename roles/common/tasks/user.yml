@@ -23,6 +23,7 @@
     groups:
       - wheel
       - ssh-user
+    shell: /bin/zsh
     createhome: yes
     state: present
 

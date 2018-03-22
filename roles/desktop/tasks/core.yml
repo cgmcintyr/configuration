@@ -25,14 +25,13 @@
   when: runlevel.stdout != "graphical.target"
 
 - name: Copy across xinitrc
-  copy: 
+  copy:
     src: xinitrc
     dest: ~/.xinitrc
     mode: u+rwx,g+rw,o+rw
 
-- name: create symlink from ~/.xsession to ~/.xinitrc
-  file:
-    src: ~/.xinitrc
+- name: Copy across xsession
+  copy:
+    src: xsession
     dest: ~/.xsession
-    state: link
-
+    mode: u+rwx,g+rw,o+rw

@@ -1,7 +1,7 @@
 ---
 - hosts: personal
   become: true
-  remote_user: "{{ username }}"
+  # remote_user: "{{ username }}"
   roles:
     - common
     - development

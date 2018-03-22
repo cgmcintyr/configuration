@@ -15,6 +15,7 @@
     - tree
     - unzip
     - vim
+    - zsh
 
 - name: install core dev tools
   when: ansible_os_family == "RedHat"
@@ -30,3 +31,4 @@
     - tree
     - unzip
     - vim
+    - zsh
