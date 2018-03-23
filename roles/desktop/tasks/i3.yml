@@ -6,6 +6,11 @@
     name: i3
     state: present
 
+- name: Copy i3 config
+  copy:
+    src: i3-config
+    dest: ~/.config/i3/config
+
 - name: Setup package list
   set_fact:
     build_deps:
