@@ -1,7 +1,69 @@
 ---
-- name: Ensure i3 is present
+- name: Ensure i3 is present.
   become: true
   become_user: root
   dnf:
     name: i3
     state: present
+
+- name: Setup package list
+  set_fact:
+    build_deps:
+      - 'libconfig-devel'
+      - 'cairo-devel'
+      - 'pango-devel'
+      - 'gdk-pixbuf2-devel'
+      - 'alsa-lib-devel'
+      - 'xcb-util-wm-devel'
+      - 'wireless-tools-devel'
+      - 'libxkbcommon-devel'
+      - 'libxkbcommon-x11-devel'
+      - 'asciidoc'
+      - 'docbook-simple'
+      - 'libxslt-devel'
+    build_deps_new: []
+
+- name: Get package diff
+  shell: "rpm -q {{ item }} 2>&1 >/dev/null || echo {{ item }}"
+  register: package_check
+  with_items: "{{ build_deps }}"
+  changed_when: False
+
+- name: Create list of new packages required to build yabar.
+  set_fact:
+    build_deps_new: "{{ build_deps_new }} + [ '{{ item.stdout }}' ]"
+  when: "item.stdout != ''"
+  with_items: "{{ package_check.results }}"
+  changed_when: False
+
+- name: Ensure new packages required to build yabar are present.
+  become: true
+  become_user: root
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ build_deps_new }}"
+
+- name: Clone most recent version of yabar
+  git:
+    repo: 'https://github.com/geommer/yabar'
+    dest: /tmp/yabar
+
+- name: Make yabar
+  make:
+    chdir: /tmp/yabar
+
+- name: Install yabar
+  become: true
+  become_user: root
+  make:
+    chdir: /tmp/yabar
+    target: install
+
+- name: Remove packages which were only installed to build yabar.
+  become: true
+  become_user: root
+  dnf:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ build_deps_new }}"
