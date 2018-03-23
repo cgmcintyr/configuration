@@ -1,13 +1,12 @@
 ---
 - hosts: personal
-  become: true
   roles:
     - common
-    - development
-    - wireless
 
 - hosts: personal
+  become: true
   become_user: "{{ username }}"
   roles:
+    - development
     - dotfiles
     - desktop

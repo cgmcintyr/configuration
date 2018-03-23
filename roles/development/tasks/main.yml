@@ -3,6 +3,7 @@
 
 - name: install core dev tools
   when: ansible_os_family == "Debian"
+  become_user: root
   apt:
     name: "{{item}}"
     state: present
@@ -19,6 +20,7 @@
 
 - name: install core dev tools
   when: ansible_os_family == "RedHat"
+  become_user: root
   dnf:
     name: "{{item}}"
     state: present
