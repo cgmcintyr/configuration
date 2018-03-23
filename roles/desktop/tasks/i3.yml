@@ -65,6 +65,14 @@
     chdir: /tmp/yabar
     target: install
 
+- name: Ensures ~/.config/yabar dir exists
+  file: path=~/.config/yabar state=directory
+
+- name: Copy yabar config
+  copy:
+    src: yabar.conf
+    dest: ~/.config/yabar/yabar.conf
+
 - name: Remove packages which were only installed to build yabar.
   become: true
   become_user: root
