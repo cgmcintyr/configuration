@@ -1,5 +1,6 @@
 ---
 - include: neovim.yml
+- include: asdf.yml
 
 - name: install core dev tools
   when: ansible_os_family == "Debian"
@@ -12,6 +13,7 @@
     - git
     - stow
     - sudo
+    - tig
     - tmux
     - tree
     - unzip
@@ -29,6 +31,7 @@
     - git
     - stow
     - sudo
+    - tig
     - tmux
     - tree
     - unzip
