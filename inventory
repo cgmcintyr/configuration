@@ -1,2 +1,2 @@
 [personal]
-localhost ansible_connection=local
+localhost ansible_port=2222
