@@ -10,7 +10,7 @@
     - { key: 'PermitEmptyPasswords', value: 'no' }
     - { key: 'PermitRootLogin', value: 'no' }
     - { key: 'AllowGroups', value: 'ssh-user' }
-  notify: restart sshd
+  notify: reload sshd
 
 # Only enable for specific hosts
 - name: Disable ssh client GSSAPI auth
