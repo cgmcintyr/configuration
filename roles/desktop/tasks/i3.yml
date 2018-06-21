@@ -6,14 +6,6 @@
     name: i3
     state: present
 
-- name: Ensures ~/.config/i3 dir exists
-  file: path=~/.config/i3 state=directory
-
-- name: Copy i3 config
-  copy:
-    src: i3-config
-    dest: ~/.config/i3/config
-
 - name: Setup package list
   set_fact:
     build_deps:
@@ -68,14 +60,6 @@
     chdir: /tmp/yabar
     target: install
 
-- name: Ensures ~/.config/yabar dir exists
-  file: path=~/.config/yabar state=directory
-
-- name: Copy yabar config
-  copy:
-    src: yabar.conf
-    dest: ~/.config/yabar/yabar.conf
-
 - name: Remove packages which were only installed to build yabar.
   become: true
   become_user: root
@@ -83,3 +67,10 @@
     name: "{{ item }}"
     state: absent
   with_items: "{{ build_deps_new }}"
+
+- name: Ensure libconfig is present
+  become: true
+  become_user: root
+  package:
+    name: libconfig
+    state: present

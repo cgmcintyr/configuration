@@ -27,15 +27,3 @@
   become_user: root
   command: systemctl set-default graphical.target
   when: runlevel.stdout != "graphical.target"
-
-- name: Copy across xinitrc
-  copy:
-    src: xinitrc
-    dest: ~/.xinitrc
-    mode: u+rwx,g+rw,o+rw
-
-- name: Copy across xsession
-  copy:
-    src: xsession
-    dest: ~/.xsession
-    mode: u+rwx,g+rw,o+rw

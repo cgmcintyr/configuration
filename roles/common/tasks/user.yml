@@ -7,6 +7,11 @@
     - wheel
     - ssh-user
 
+- name: Ensure zsh is present
+  package:
+    name: zsh
+    state: present
+
 - name: Allow 'wheel' group to have passwordless sudo
   lineinfile:
     dest: /etc/sudoers
@@ -14,7 +19,6 @@
     regexp: '^%wheel'
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: 'visudo -cf %s'
-
 
 - name: Creating default user '{{ username }}'
   user:
@@ -26,12 +30,6 @@
     shell: /bin/zsh
     createhome: yes
     state: present
-
-- name: Add authorized keys
-  authorized_key:
-    user: "{{ username }}"
-    state: present
-    key: "{{ ssh_public_key_personal }}"
 
 - name: Remove '{{ username }}'\'s password
   command: passwd -d {{ username }}
