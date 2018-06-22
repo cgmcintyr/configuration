@@ -1,0 +1,6 @@
+---
+- name: Ensure FontAwesome is present
+  become_user: root
+  package:
+    name: fontawesome-fonts
+    state: present
