@@ -31,5 +31,11 @@
     createhome: yes
     state: present
 
+- name: Set authorized key for '{{ username }}'
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ ssh_public_key_personal }}"
+
 - name: Remove '{{ username }}'\'s password
   command: passwd -d {{ username }}
