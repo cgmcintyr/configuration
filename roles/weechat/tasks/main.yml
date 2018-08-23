@@ -1,0 +1,44 @@
+# Based on https://iamkelv.in/blog/2017/08/weechat.html
+---
+- name: Ensure weechat is present
+  become: true
+  become_user: root
+  dnf:
+    name: weechat
+    state: present
+
+- name: Ensure tmux is present
+  become: true
+  become_user: root
+  dnf:
+    name: tmux
+    state: present
+
+- name: Ensure systemd user directory exists
+  file:
+    path: ~/.config/systemd/user
+    state: directory
+
+- name: Install weechat service
+  template:
+    src: weechat.service
+    dest: ~/.config/systemd/user/weechat.service
+
+- name: Register uid of '{{username}}'
+  command: id -u {{username}}
+  register: uid
+
+- name: Start and enable weechat service
+  systemd:
+    name: weechat
+    state: started
+    enabled: yes
+    user: yes
+    daemon_reload: yes
+  environment:
+    XDG_RUNTIME_DIR: /run/user/{{uid.stdout}}
+
+- name: Enable linger for '{{ username }}'
+  become: true
+  become_user: root
+  command: loginctl enable-linger {{ username }}
