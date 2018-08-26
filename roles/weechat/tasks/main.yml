@@ -96,3 +96,12 @@
     hour: 0
     minute: 0
     weekday: 1
+
+- name: Open port 8443 for weechat
+  become: true
+  become_user: root
+  firewalld:
+    port: 8443/tcp
+    permanent: true
+    state: enabled
+    immediate: true
