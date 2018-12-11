@@ -1,2 +1,8 @@
-[personal]
-localhost ansible_port=2222
+#[personal]
+#localhost ansible_port=2222
+
+[server]
+irc.cgmcintyre.com #ansible_user=root
+
+[irc-server]
+irc.cgmcintyre.com ansible_python_interpreter=python3

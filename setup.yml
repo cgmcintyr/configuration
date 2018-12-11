@@ -1,13 +1,24 @@
 ---
-- hosts: personal
-  become: true
-  roles:
-    - common
+#- hosts: personal
+#  become: true
+#  roles:
+#    - common
+#
+#- hosts: personal
+#  become: true
+#  become_user: "{{ username }}"
+#  roles:
+#    - development
+#    - dotfiles
+#    - desktop
+#
+#- hosts: server
+#  become: true
+#  roles:
+#    - common
 
-- hosts: personal
+- hosts: irc-server
   become: true
   become_user: "{{ username }}"
   roles:
-    - development
-    - dotfiles
-    - desktop
+    - weechat
